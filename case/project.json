@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "name": "图片格式转换器",
+  "slug": "image-converter",
+  "local_path": "/Users/chenqingwei/外部需求/proj-2689b1",
+  "github_url": "https://github.com/kingvid-chan/image-converter",
+  "preview": {
+    "server": "aliyun-cowork",
+    "deploy_root": "/srv/codingagent/image-converter",
+    "service_name": "codingagent-image-converter",
+    "port": 5400,
+    "base_path": "/projects/image-converter/",
+    "public_url": "https://cqw.life/projects/image-converter/",
+    "health_path": "/projects/image-converter/healthz"
+  }
+}
