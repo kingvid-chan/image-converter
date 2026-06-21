@@ -1,0 +1,1 @@
+{"version":"0.0.1","target":"aliyun-cowork","deploy_root":"/srv/codingagent/image-converter/","nginx_snippet":"/etc/nginx/snippets/cqw-locations.conf","public_url":"https://cqw.life/projects/image-converter/","health_path":"/projects/image-converter/healthz","verification":"nginx -t passed + reload succeeded"}
