@@ -1,0 +1,20 @@
+{
+  "iteration": "0.0.1",
+  "version": "0.0.1",
+  "public_url": "https://cqw.life/projects/image-converter/",
+  "verdict": "pass",
+  "screenshot_path": "evidence/verification/browser-0.0.1-main.png",
+  "checklist": {
+    "title": "图片格式转换器 v0.0.1",
+    "version_badge": "v0.0.1 present",
+    "mode_tabs": "单文件转换 + 批量转换, both visible",
+    "dropzone": "drag-and-drop area with instructions",
+    "format_selector": "PNG/JPEG/WebP/BMP options",
+    "footer": "privacy note displayed",
+    "console_errors": 0,
+    "visual_glitches": "none"
+  },
+  "browser": "Chromium via Browserbase",
+  "model": "DeepSeek-V4-Pro (vision)",
+  "timestamp": "2026-06-21T01:15:00Z"
+}
