@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "error": "Claude Code API 401 Invalid authentication credentials",
+  "diagnostics": {
+    "claude_auth_status": "loggedIn: true, authMethod: oauth_token, apiProvider: firstParty",
+    "api_key_in_env": true,
+    "oauth_refresh_attempted": true,
+    "oauth_refresh_result": "timed out (browser OAuth flow not available headless)",
+    "simple_prompt_test": "Failed to authenticate. API Error: 401",
+    "attempted_fixes": [
+      "OAuth token (existing loggedIn status)",
+      "ANTHROPIC_API_KEY environment variable injection",
+      "claude auth login (timed out)"
+    ]
+  },
+  "conclusion": "Systemic Claude Code authentication failure. OAuth token appears logged in but API calls return 401. Requires manual re-authentication or credential rotation.",
+  "timestamp": "2026-06-20T17:30:00+00:00"
+}

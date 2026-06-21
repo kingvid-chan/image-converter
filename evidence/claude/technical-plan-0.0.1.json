@@ -1,0 +1,133 @@
+{
+  "session_id": "0.0.1-technical-plan-2026-06-21",
+  "iteration": "0.0.1",
+  "phase": "technical_plan",
+  "created_at": "2026-06-21",
+  "summary": "纯前端图片格式转换器 SPA。React 18 + TypeScript + Vite 5 + Tailwind CSS 3。HTML5 Canvas API 实现 PNG/JPEG/WebP/BMP 互转，自研 BMP 24-bit 编码器。JSZip 批量打包下载。React Context + useReducer 状态管理。部署在 /projects/image-converter/ 子路径，静态资源带 ?v=0.0.1 版本令牌。Playwright 浏览器自动化测试。",
+  "technical_stack": {
+    "framework": {
+      "name": "React 18",
+      "language": "TypeScript 5",
+      "rationale": "生态最成熟、社区最大、TypeScript 集成度高。备选 Vue 3，React 在组件生态和招聘市场略优。"
+    },
+    "build_tool": {
+      "name": "Vite 5",
+      "rationale": "开发 HMR 极速、零配置 TypeScript、base path 配置简单。相比 webpack 更快，相比 CRA 更现代。",
+      "config": {
+        "base": "/projects/image-converter/"
+      }
+    },
+    "styling": {
+      "name": "Tailwind CSS 3",
+      "rationale": "原子化 CSS、内置响应式断点、JIT 编译体积小。无需额外 CSS 文件。"
+    },
+    "state_management": {
+      "name": "React Context + useReducer",
+      "rationale": "状态结构简单（模式、文件列表、结果列表），无需 Redux/Zustand。减少依赖。"
+    },
+    "image_conversion": {
+      "method": "HTML5 Canvas API",
+      "details": {
+        "png": "canvas.toBlob('image/png') — 原生支持，无损",
+        "jpeg": "canvas.toBlob('image/jpeg', 0.92) — 原生支持，有损",
+        "webp": "canvas.toBlob('image/webp', 0.92) — 原生支持，有损+无损",
+        "bmp_output": "自研 BMP 24-bit 编码器 (src/utils/bmp-encoder.ts) — canvas.toBlob 不支持 image/bmp，约80行代码实现 BITMAPFILEHEADER + BITMAPINFOHEADER + BGR 像素数据",
+        "bmp_input": "浏览器原生支持 BMP 解码，通过 Image 元素加载后绘制到 Canvas"
+      }
+    },
+    "batch_packaging": {
+      "name": "JSZip",
+      "rationale": "纯 JS、浏览器兼容好、支持 Blob 生成、社区活跃"
+    },
+    "testing": {
+      "name": "Playwright",
+      "rationale": "真实浏览器环境、多浏览器支持、截图对比、支持文件拖拽/下载测试"
+    }
+  },
+  "component_tree": {
+    "App": "根组件，包裹 AppContext.Provider，渲染 Header + ModeTabs + (SingleMode | BatchMode) + ErrorToast",
+    "Header": "标题栏：'图片格式转换器' + 版本号 v0.0.1",
+    "ModeTabs": "单文件 / 批量 模式切换 Tab",
+    "FileDropZone": "拖拽区域 + 点击选择文件按钮。支持 accept 属性过滤、multiple 属性切换。",
+    "FormatSelector": "目标格式下拉选择：PNG / JPEG / WebP / BMP",
+    "SingleMode": {
+      "description": "单文件模式容器，组合以下组件",
+      "PreviewComparison": "左右对比预览：左侧原图 + 文件名 + 格式 + 大小，右侧转换后图片 + 格式 + 大小",
+      "SizeComparison": "文件大小变化条：原大小 → 新大小，显示压缩率百分比",
+      "DownloadButton": "下载转换后图片"
+    },
+    "BatchMode": {
+      "description": "批量模式容器，组合以下组件",
+      "FileList": "文件缩略图列表，每个文件显示缩略图+文件名+格式+大小，支持单个移除",
+      "ConversionProgress": "批量转换进度条，显示已完成/总数",
+      "BatchResults": "批量结果列表：每个文件显示转换前后大小对比",
+      "DownloadButton": "打包下载 ZIP"
+    },
+    "ErrorToast": "顶部浮层错误/警告提示，支持自动消失和手动关闭"
+  },
+  "data_flow": {
+    "state_shape": {
+      "mode": "'single' | 'batch'",
+      "files": "ImageFile[] (id, file, format, size, previewUrl, status)",
+      "targetFormat": "'image/png' | 'image/jpeg' | 'image/webp' | 'image/bmp'",
+      "results": "ConversionResult[] (originalFile, convertedBlob, originalSize, convertedSize, originalFormat, targetFormat, previewUrls)",
+      "errors": "AppError[] (type, message, file?)",
+      "converting": "boolean"
+    },
+    "actions": [
+      "SET_MODE",
+      "ADD_FILES → validateFile() → 合法→files, 非法→errors",
+      "REMOVE_FILE",
+      "SET_TARGET_FORMAT",
+      "CONVERT_START / CONVERT_SUCCESS / CONVERT_ERROR",
+      "CLEAR_ERRORS",
+      "RESET"
+    ],
+    "conversion_flow": "File → createImageBitmap/Image.load → Canvas.drawImage → toBlob/bmpEncode → Blob → URL.createObjectURL → 预览"
+  },
+  "exception_handling": {
+    "non_image_file": {
+      "detection": "检查 File.type 是否以 image/ 开头，或读取文件头 magic bytes",
+      "ui": "ErrorToast 红色提示 '不支持的文件格式：xxx.pdf，请选择图片文件'"
+    },
+    "corrupted_image": {
+      "detection": "Image.onerror 事件捕获",
+      "ui": "ErrorToast 红色提示 '无法解析图片：xxx.png，文件可能已损坏'"
+    },
+    "same_format": {
+      "detection": "源格式 === 目标格式 时检查",
+      "ui": "ErrorToast 黄色提示 '源文件已是 PNG 格式，无需转换'，仍允许继续（可改变质量参数）"
+    },
+    "oversized_image": {
+      "detection": "File.size > 50MB 或 Image dimensions > 8192px",
+      "ui": "ErrorToast 橙色警告 '图片尺寸较大（6000×4000），转换可能需要较长时间'，不阻止操作"
+    },
+    "bmp_encode_failure": {
+      "detection": "bmpEncode() try/catch",
+      "ui": "ErrorToast 红色提示 'BMP 编码失败，请尝试其他格式'"
+    },
+    "webp_unsupported": {
+      "detection": "canvas.toDataURL('image/webp') 返回 'data:image/webp' 开头检查",
+      "ui": "WebP 选项置灰或隐藏，提示 '当前浏览器不支持 WebP 格式'"
+    }
+  },
+  "caching_strategy": {
+    "html": "Nginx 下发 Cache-Control: no-cache 响应头（非 <meta> 标签）",
+    "static_assets": "所有 JS/CSS/图片资源 URL 带 ?v=0.0.1 版本令牌",
+    "base_path": "Vite base = /projects/image-converter/，资源路径保留此前缀",
+    "token_evolution": "每个 iteration 版本号递增（0.0.1 → 0.0.2 → ...），自动触发缓存失效"
+  },
+  "deployment": {
+    "target": "Nginx (Aliyun)",
+    "base_path": "/projects/image-converter/",
+    "build_command": "vite build",
+    "output_dir": "dist/",
+    "nginx_config": "alias + try_files $uri /index.html"
+  },
+  "related_docs": [
+    "docs/architecture.md",
+    "docs/decisions/ADR-001-技术栈选型.md",
+    "docs/decisions/ADR-002-BMP格式编码策略.md",
+    "docs/iterations/0.0.1.md"
+  ]
+}

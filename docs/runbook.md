@@ -2,16 +2,61 @@
 
 ## 本地安装与启动
 
+```bash
+# 前置条件：Node.js >= 18, npm >= 9
+node -v
+npm -v
+
+# 安装依赖
+npm install
+
+# 开发模式启动（HMR 热更新）
+npm run dev
+# 默认 http://localhost:5173/projects/image-converter/
+
+# 生产构建
+npm run build
+# 产物在 dist/ 目录
+
+# 预览生产构建
+npm run preview
+```
+
 ## 测试、构建与健康检查
+
+```bash
+# 运行 Playwright E2E 测试（需先安装浏览器）
+npx playwright install chromium
+npx playwright test
+
+# 仅类型检查
+npx tsc --noEmit
+
+# 生产构建
+npm run build
+
+# 健康检查：访问 http://localhost:5173/projects/image-converter/
+# 确认页面加载、无控制台错误
+```
 
 记录自动测试、生产启动、health endpoint、公网浏览器关键流程、静态资源、
 控制台错误和 Kimi 截图视觉验收方式。
 
 ## 环境变量
 
+无需环境变量。项目为纯前端静态应用，所有配置在 vite.config.ts 中。
+
 ## Base Path
 
 项目必须支持 `/projects/image-converter/`，静态资源和前端路由不得假设部署在 `/`。
+
+Vite 配置：
+```typescript
+// vite.config.ts
+export default defineConfig({
+  base: '/projects/image-converter/',
+})
+```
 
 公网浏览器验收时，最终 URL 和所有项目资源必须保留此前缀。
 
@@ -27,8 +72,16 @@
 
 ## Aliyun systemd 与 Nginx
 
+（待部署阶段填充）
+
 ## 日志查看
+
+（待部署阶段填充）
 
 ## 常见故障与恢复
 
+（待迭代过程中积累）
+
 ## 回滚到精确 Tag
+
+（待部署阶段填充）

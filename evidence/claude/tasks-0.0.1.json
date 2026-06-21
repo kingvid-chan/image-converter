@@ -1,0 +1,148 @@
+{
+  "session_id": "0.0.1-technical-plan-2026-06-21",
+  "iteration": "0.0.1",
+  "phase": "tasks_defined",
+  "created_at": "2026-06-21",
+  "tasks": [
+    {
+      "id": "T01",
+      "title": "项目脚手架搭建",
+      "description": "npm create vite 初始化 React + TypeScript 项目，安装依赖（react, react-dom, tailwindcss, postcss, autoprefixer, jszip），配置 Tailwind CSS（tailwind.config.js, postcss.config.js, src/styles/index.css），配置 TypeScript tsconfig，设置 ESLint/Prettier。",
+      "files": ["package.json", "tsconfig.json", "tsconfig.node.json", "vite.config.ts", "tailwind.config.js", "postcss.config.js", "src/styles/index.css", "index.html"],
+      "completion_criteria": "npm install 成功；npm run dev 可启动空页面；Tailwind 类名可生效"
+    },
+    {
+      "id": "T02",
+      "title": "TypeScript 类型定义",
+      "description": "定义 ImageFile、ConversionResult、AppError、AppState、AppAction 等核心类型。ImageFile 需包含 id、file、format、size、previewUrl、status 字段。",
+      "files": ["src/types/index.ts"],
+      "completion_criteria": "TypeScript 编译无错误；类型完整覆盖所有实体"
+    },
+    {
+      "id": "T03",
+      "title": "全局状态管理 (AppContext)",
+      "description": "实现 React Context + useReducer。reducer 支持 SET_MODE、ADD_FILES、REMOVE_FILE、SET_TARGET_FORMAT、CONVERT_START、CONVERT_SUCCESS、CONVERT_ERROR、CLEAR_ERRORS、RESET 等 action。",
+      "files": ["src/context/AppContext.tsx"],
+      "completion_criteria": "TypeScript 类型检查通过；reducer 函数覆盖所有 action"
+    },
+    {
+      "id": "T04",
+      "title": "文件校验工具 (validator.ts)",
+      "description": "实现 validateFile(file: File): ValidationResult。检测：1) MIME 类型是否为 image/*；2) 格式是否为 PNG/JPEG/WebP/BMP（通过文件头 magic bytes 辅助判断）；3) 文件大小阈值检查（>50MB 警告）；4) 返回合法/非法/警告分类结果。",
+      "files": ["src/utils/validator.ts"],
+      "completion_criteria": "函数正确校验各格式图片；非图片文件返回错误；超大文件返回警告"
+    },
+    {
+      "id": "T05",
+      "title": "Canvas 格式转换核心 (converter.ts)",
+      "description": "实现 convertImage(file: File, targetFormat: ImageFormat): Promise<ConversionResult>。流程：读取 File → 加载 Image → 绘制 Canvas → toBlob/toDataURL → 返回 Blob + 大小数据。PNG/JPEG/WebP 使用 canvas.toBlob()，BMP 调用 bmpEncoder。包含 WebP 不支持检测和图片损坏检测。quality 参数：JPEG 0.92, WebP 0.92。",
+      "files": ["src/utils/converter.ts"],
+      "completion_criteria": "能正确将 PNG 转为 JPEG/WebP；返回的 Blob 可被浏览器正常渲染；损坏图片抛出错误"
+    },
+    {
+      "id": "T06",
+      "title": "BMP 24-bit 编码器 (bmp-encoder.ts)",
+      "description": "实现 bmpEncode(imageData: ImageData): Blob。按 BMP 规范构造 BITMAPFILEHEADER (14B) + BITMAPINFOHEADER (40B) + BGR 像素数据（底向上、每行 4 字节对齐）。输入为 Canvas getImageData() 的 RGBA 数据，输出为 image/bmp Blob。",
+      "files": ["src/utils/bmp-encoder.ts"],
+      "completion_criteria": "生成的 BMP Blob 可被浏览器 <img> 正确渲染；文件大小符合预期（width×height×3 + 54）"
+    },
+    {
+      "id": "T07",
+      "title": "下载工具 (download.ts)",
+      "description": "实现 downloadBlob(blob, filename) 触发浏览器下载；实现 downloadZip(results, targetFormat) 使用 JSZip 打包所有转换结果为 ZIP 并触发下载。文件名格式：原文件名_转换后.格式。",
+      "files": ["src/utils/download.ts"],
+      "completion_criteria": "单文件点击下载成功；批量 ZIP 下载可解压得到正确文件"
+    },
+    {
+      "id": "T08",
+      "title": "Header + ModeTabs 组件",
+      "description": "Header：显示'图片格式转换器'标题 + 'v0.0.1'版本标签。ModeTabs：单文件/批量切换 Tab，高亮当前模式，触发 dispatch(SET_MODE)。",
+      "files": ["src/components/Header.tsx", "src/components/ModeTabs.tsx"],
+      "completion_criteria": "标题和版本显示正确；Tab 切换改变 mode 状态；UI 与 Tailwind 样式一致"
+    },
+    {
+      "id": "T09",
+      "title": "FileDropZone 组件",
+      "description": "拖拽区域 + 点击选择按钮。支持：1) 拖拽文件高亮效果；2) 点击触发 <input type='file'>；3) accept='image/*' 过滤；4) multiple 属性根据模式切换；5) 拖拽/选择后调用 dispatch(ADD_FILES)。",
+      "files": ["src/components/FileDropZone.tsx"],
+      "completion_criteria": "拖拽图片显示高亮边框；松手后文件添加到状态；点击按钮可选择文件；非图片文件在文件选择器中过滤"
+    },
+    {
+      "id": "T10",
+      "title": "FormatSelector 组件",
+      "description": "目标格式下拉选择器。四个选项：PNG / JPEG / WebP / BMP。选择后 dispatch(SET_TARGET_FORMAT)。检测浏览器是否支持 WebP（通过 canvas.toDataURL 探针），不支持则禁用 WebP 选项并显示提示。检测与源格式相同的情况。",
+      "files": ["src/components/FormatSelector.tsx"],
+      "completion_criteria": "下拉选择四种格式；WebP 不支持时禁用；源格式=目标格式时显示提示"
+    },
+    {
+      "id": "T11",
+      "title": "单文件模式 (SingleMode + PreviewComparison + SizeComparison)",
+      "description": "SingleMode 容器组装 FileDropZone + FormatSelector + PreviewComparison + SizeComparison + DownloadButton。PreviewComparison：左右分栏，左侧原图预览（img + 文件名 + 格式标签 + 文件大小），右侧转换后预览。SizeComparison：原大小 → 新大小的可视化对比条 + 压缩率（原点后减少 XX% 或 增加 XX%）。Convert 按钮触发转换。",
+      "files": ["src/components/single/SingleMode.tsx", "src/components/single/PreviewComparison.tsx", "src/components/single/SizeComparison.tsx"],
+      "completion_criteria": "选择图片后显示原图预览和文件信息；选择目标格式后点击转换，右侧显示转换后图片和大小对比；压缩率计算正确"
+    },
+    {
+      "id": "T12",
+      "title": "批量模式 (BatchMode + FileList + ConversionProgress + BatchResults)",
+      "description": "BatchMode 容器组装 FileDropZone(multiple) + FormatSelector + FileList + ConvertButton + ConversionProgress + BatchResults + DownloadZipButton。FileList：缩略图网格，每项显示缩略图+文件名+格式+大小+移除按钮。ConversionProgress：进度条显示 N/M 完成。BatchResults：结果列表显示每个文件的转换前后大小对比。DownloadZipButton：调用 downloadZip()。",
+      "files": ["src/components/batch/BatchMode.tsx", "src/components/batch/FileList.tsx", "src/components/batch/ConversionProgress.tsx", "src/components/batch/BatchResults.tsx"],
+      "completion_criteria": "多文件拖拽后显示缩略图列表；可移除单个文件；点击转换后逐文件转换并更新进度；全部完成后显示结果列表；点击下载 ZIP 包含所有转换后文件"
+    },
+    {
+      "id": "T13",
+      "title": "异常处理 UI (ErrorToast + 各组件集成)",
+      "description": "ErrorToast 组件：顶部居中浮层，红色(错误)/黄色(警告)/橙色(提示) 三色。支持自动消失（5s）和手动关闭。各组件在适当位置 dispatch 错误/警告：FileDropZone → 非图片文件；converter → 损坏图片；FormatSelector → 同格式提示；converter → 超大图片警告；batch → 转换失败。",
+      "files": ["src/components/ErrorToast.tsx"],
+      "completion_criteria": "非图片文件拖入时显示红色错误；损坏图片转换时显示红色错误；同格式选择时显示黄色提示；超大图片显示橙色警告；错误可自动消失或手动关闭"
+    },
+    {
+      "id": "T14",
+      "title": "App 根组件 + 入口文件 (main.tsx + index.html + 版本令牌)",
+      "description": "App.tsx：组装 AppContext.Provider + Header + ModeTabs + 条件渲染 SingleMode/BatchMode + ErrorToast + Footer。main.tsx：ReactDOM.createRoot 挂载。index.html：设置 <title>、<meta charset>、<meta viewport>、所有静态资源引用带 ?v=0.0.1。favicon 引用带版本令牌。添加 PWA meta 标签确保移动端可用。",
+      "files": ["src/App.tsx", "src/main.tsx", "index.html", "public/favicon.svg"],
+      "completion_criteria": "页面可完整渲染；模式切换正常；静态资源 URL 带 ?v=0.0.1；移动端视口正确"
+    },
+    {
+      "id": "T15",
+      "title": "Vite 构建配置 + 响应式布局收尾",
+      "description": "vite.config.ts：设置 base: '/projects/image-converter/'，配置 build.outDir、build.assetsDir，确保构建产物路径正确。Tailwind 响应式：确保所有组件在移动端（<768px）和桌面端（≥768px）均可正常使用。单文件预览在移动端改为上下堆叠。批量缩略图在移动端减少列数。",
+      "files": ["vite.config.ts", "src/styles/index.css", "tailwind.config.js"],
+      "completion_criteria": "npm run build 成功，产物在 dist/；dist/index.html 中资源路径以 /projects/image-converter/ 开头；npm run preview 可访问；移动端（375px 宽度）布局正常"
+    },
+    {
+      "id": "T16",
+      "title": "Playwright E2E 测试",
+      "description": "编写 Playwright 测试脚本覆盖：1) 单文件 PNG→JPEG 转换流程；2) 单文件 JPEG→WebP 转换；3) 单文件 PNG→BMP 转换（验证 BMP 输出）；4) 批量文件转换 + ZIP 下载（验证 ZIP 内容）；5) 非图片文件拖入错误提示；6) 损坏图片转换错误提示；7) 同格式转换提示；8) 模式切换。测试文件放在 tests/ 目录。",
+      "files": ["tests/image-converter.spec.ts", "tests/fixtures/*.png", "tests/fixtures/*.jpg", "tests/fixtures/corrupted.png", "tests/fixtures/not-image.pdf"],
+      "completion_criteria": "所有 Playwright 测试用例通过；覆盖单文件、批量、异常处理三类场景"
+    },
+    {
+      "id": "T17",
+      "title": "自测执行 + Handoff 文件",
+      "description": "1) 安装 Playwright 浏览器；2) 启动 vite dev server；3) 运行 npx playwright test；4) 确认全部通过；5) 保存自测命令和结果到 evidence/claude/self-test-0.0.1.json；6) 生成 evidence/claude/handoff-0.0.1.json，包含 session_id、technical_plan 摘要、tasks 列表及完成状态、implementation_commits 列表、self_test_command、self_test_result、ready_for_verification: true。",
+      "files": ["evidence/claude/self-test-0.0.1.json", "evidence/claude/handoff-0.0.1.json"],
+      "completion_criteria": "自测全部通过；handoff 文件完整且 ready_for_verification: true"
+    }
+  ],
+  "total_tasks": 17,
+  "estimated_commits": "17-20",
+  "dependency_order": {
+    "T01": [],
+    "T02": ["T01"],
+    "T03": ["T02"],
+    "T04": ["T02"],
+    "T05": ["T02"],
+    "T06": ["T02"],
+    "T07": ["T02"],
+    "T08": ["T03"],
+    "T09": ["T03", "T04"],
+    "T10": ["T03"],
+    "T11": ["T05", "T06", "T09", "T10", "T07"],
+    "T12": ["T05", "T06", "T09", "T10", "T07"],
+    "T13": ["T03"],
+    "T14": ["T08", "T11", "T12", "T13"],
+    "T15": ["T14"],
+    "T16": ["T15"],
+    "T17": ["T16"]
+  }
+}
