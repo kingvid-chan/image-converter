@@ -8,4 +8,6 @@ __pycache__/
 node_modules/
 dist/
 process-log/
+test-results/
+*.tsbuildinfo
 .paused

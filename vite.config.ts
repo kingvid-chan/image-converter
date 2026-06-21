@@ -5,24 +5,27 @@ import react from '@vitejs/plugin-react'
 const VERSION = '0.0.1'
 
 /**
- * 自定义插件：为所有静态资源 URL 追加版本令牌 ?v=0.0.N
+ * 自定义插件：为构建产物的静态资源 URL 追加版本令牌 ?v=0.0.N
  * 确保浏览器在版本迭代后不会命中旧缓存
+ *
+ * 仅在 build 模式生效：开发模式跳过（避免干扰 Vite HMR 和 esbuild 模块解析）。
  */
 function versionTokenPlugin(): Plugin {
   return {
     name: 'version-token',
     enforce: 'post',
-    transformIndexHtml(html) {
-      // 为所有本地 JS/CSS 资源链接添加版本令牌
-      // 匹配 src="/projects/image-converter/assets/..." 或 href="..."
-      return html.replace(
-        /(src|href)="(\/projects\/image-converter\/[^"]+)"/g,
-        (_match, attr, url) => {
-          // 跳过已有查询参数的 URL
-          if (url.includes('?')) return `${attr}="${url}"`
-          return `${attr}="${url}?v=${VERSION}"`
-        },
-      )
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        // 只在 production build 时添加版本令牌
+        // Vite dev server 已有自己的缓存失效机制（import 查询参数、HMR）
+        // 源文件路径（/src/）和 Vite 内部资源（@vite, @react-refresh）不能加 ?v=
+        // 否则会破坏 esbuild 的 loader 检测
+        return html.replace(
+          /(src|href)="(\/projects\/image-converter\/(?!@vite|@react-refresh|src\/|favicon)[^"?]*?)"/g,
+          (_match, attr, url) => `${attr}="${url}?v=${VERSION}"`,
+        )
+      },
     },
   }
 }

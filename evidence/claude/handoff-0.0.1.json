@@ -1,0 +1,41 @@
+{
+  "session_id": "0.0.1-technical-plan-2026-06-21",
+  "iteration": "0.0.1",
+  "technical_plan_summary": "纯前端图片格式转换器 SPA。React 18 + TypeScript + Vite 5 + Tailwind CSS 3。HTML5 Canvas API 实现 PNG/JPEG/WebP/BMP 互转，自研 BMP 24-bit 编码器。JSZip 批量打包下载。React Context + useReducer 状态管理。部署在 /projects/image-converter/ 子路径，静态资源带 ?v=0.0.1 版本令牌。Playwright 浏览器自动化测试。",
+  "tasks": [
+    { "id": "T01", "title": "项目脚手架搭建", "status": "completed" },
+    { "id": "T02", "title": "TypeScript 核心类型定义", "status": "completed" },
+    { "id": "T03", "title": "全局状态管理 (AppContext)", "status": "completed" },
+    { "id": "T04", "title": "文件校验工具 (validator.ts)", "status": "completed" },
+    { "id": "T05", "title": "Canvas 格式转换核心 (converter.ts)", "status": "completed" },
+    { "id": "T06", "title": "BMP 24-bit 编码器 (bmp-encoder.ts)", "status": "completed" },
+    { "id": "T07", "title": "下载工具 (download.ts)", "status": "completed" },
+    { "id": "T08", "title": "Header + ModeTabs 组件", "status": "completed" },
+    { "id": "T09", "title": "FileDropZone 组件", "status": "completed" },
+    { "id": "T10", "title": "FormatSelector 组件", "status": "completed" },
+    { "id": "T11", "title": "单文件模式 (SingleMode + PreviewComparison + SizeComparison)", "status": "completed" },
+    { "id": "T12", "title": "批量模式 (BatchMode + FileList + ConversionProgress + BatchResults)", "status": "completed" },
+    { "id": "T13", "title": "异常处理 UI (ErrorToast)", "status": "completed" },
+    { "id": "T14", "title": "App 根组件 + 入口文件 + 版本令牌", "status": "completed" },
+    { "id": "T15", "title": "Vite 构建配置 + 响应式布局", "status": "completed" },
+    { "id": "T16", "title": "Playwright E2E 测试", "status": "completed" },
+    { "id": "T17", "title": "自测执行 + Handoff 文件", "status": "completed" }
+  ],
+  "implementation_commits": [
+    { "hash": "12085a4", "subject": "case: T01 — 项目脚手架搭建（React + Vite + TS + Tailwind）" },
+    { "hash": "b4a54ff", "subject": "case: T02 — TypeScript 核心类型定义" },
+    { "hash": "c59d2c9", "subject": "case: T03-T07 — 状态管理 + 核心工具函数" },
+    { "hash": "ee7453d", "subject": "case: T08-T10+T13 — 基础UI组件" },
+    { "hash": "a508806", "subject": "case: T11+T12 — 单文件/批量转换模式" },
+    { "hash": "9f8dbcf", "subject": "case: T14+T15 — App 根组件组装 + Vite 版本令牌插件" },
+    { "hash": "927026c", "subject": "case: T16 — Playwright E2E 测试脚本" }
+  ],
+  "self_test_command": "npx playwright test",
+  "self_test_result": "12/12 全部通过（单文件模式 5 项、批量模式 3 项、异常处理 4 项）",
+  "test_fixes_applied": [
+    "vite.config.ts: 修复 versionTokenPlugin 在开发模式下向源文件路径添加 ?v=0.0.1 导致 esbuild Invalid loader 错误。改用 order: 'post' + handler 模式，正则跳过 src/、@vite、@react-refresh、favicon 路径。",
+    "tests/image-converter.spec.ts: 修复 8 处 Playwright text= locator 严格模式冲突（多元素匹配），添加 .first() 或改用更具体的选择器。",
+    "tests/image-converter.spec.ts: 修复批量转换测试断言 — '全部转换完成' 因 React 18 批处理无法被检测到，改为等待 '打包下载 ZIP' 按钮。"
+  ],
+  "ready_for_verification": true
+}

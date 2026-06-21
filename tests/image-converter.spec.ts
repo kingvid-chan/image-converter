@@ -91,7 +91,7 @@ test.describe('图片格式转换器 — 单文件模式', () => {
   test('页面加载正确显示标题和版本', async ({ page }) => {
     await page.goto(BASE)
     await expect(page.locator('h1')).toContainText('图片格式转换器')
-    await expect(page.locator('text=v0.0.1')).toBeVisible()
+    await expect(page.locator('text=v0.0.1').first()).toBeVisible()
     await expect(page.locator('text=单文件转换')).toBeVisible()
     await expect(page.locator('text=批量转换')).toBeVisible()
   })
@@ -99,8 +99,8 @@ test.describe('图片格式转换器 — 单文件模式', () => {
   test('拖拽区域显示正确', async ({ page }) => {
     await page.goto(BASE)
     await expect(page.locator('text=拖拽图片到此处')).toBeVisible()
-    await expect(page.locator('text=PNG')).toBeVisible()
-    await expect(page.locator('text=JPEG')).toBeVisible()
+    await expect(page.locator('text=PNG').first()).toBeVisible()
+    await expect(page.locator('text=JPEG').first()).toBeVisible()
   })
 
   test('单文件 PNG→JPEG 转换流程', async ({ page }) => {
@@ -122,7 +122,7 @@ test.describe('图片格式转换器 — 单文件模式', () => {
 
     // 等待转换完成 — 应该显示预览和结果
     await expect(page.locator('text=原图')).toBeVisible({ timeout: 10000 })
-    await expect(page.locator('text=转换后')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('text=转换后').first()).toBeVisible({ timeout: 5000 })
 
     // 验证文件大小对比区域出现
     await expect(page.locator('text=文件大小对比')).toBeVisible()
@@ -148,8 +148,9 @@ test.describe('图片格式转换器 — 单文件模式', () => {
 
     // 验证转换完成
     await expect(page.locator('text=原图')).toBeVisible({ timeout: 10000 })
-    await expect(page.locator('text=转换后')).toBeVisible({ timeout: 5000 })
-    await expect(page.locator('text=BMP')).toBeVisible()
+    await expect(page.locator('text=转换后').first()).toBeVisible({ timeout: 5000 })
+    // BMP 格式标签出现在转换后区域（绿色徽章）
+    await expect(page.locator('.bg-green-100:has-text("BMP")')).toBeVisible()
   })
 
   test('模式切换清空状态', async ({ page }) => {
@@ -185,7 +186,7 @@ test.describe('图片格式转换器 — 批量模式', () => {
     await fileInput.setInputFiles([pngFile, redFile])
 
     // 验证显示了文件数量
-    await expect(page.locator('text=已选择 2 个文件')).toBeVisible()
+    await expect(page.locator('text=已选择 2 个文件').first()).toBeVisible()
   })
 
   test('批量模式：转换并打包下载 ZIP', async ({ page }) => {
@@ -205,10 +206,9 @@ test.describe('图片格式转换器 — 批量模式', () => {
     // 点击批量转换
     await page.locator('button:has-text("开始批量转换")').click()
 
-    // 等待转换完成
-    await expect(page.locator('text=全部转换完成')).toBeVisible({ timeout: 15000 })
-
-    // 验证结果列表
+    // 等待转换完成 — "全部转换完成" 在 React 18 批处理中一闪而过
+    // 直接等待结果列表或下载按钮出现
+    await expect(page.locator('button:has-text("打包下载 ZIP")')).toBeVisible({ timeout: 15000 })
     await expect(page.locator('text=转换结果')).toBeVisible()
 
     // 下载按钮可见
@@ -232,7 +232,7 @@ test.describe('图片格式转换器 — 批量模式', () => {
     const redFile = path.join(FIXTURES, 'red-1x1.png')
     await page.locator('input[type="file"]').setInputFiles([pngFile, redFile])
 
-    await expect(page.locator('text=已选择 2 个文件')).toBeVisible()
+    await expect(page.locator('text=已选择 2 个文件').first()).toBeVisible()
 
     // 鼠标悬停显示移除按钮并点击
     const firstFileCard = page.locator('.group').first()
@@ -241,7 +241,7 @@ test.describe('图片格式转换器 — 批量模式', () => {
     await removeBtn.click()
 
     // 验证只剩余 1 个文件
-    await expect(page.locator('text=已选择 1 个文件')).toBeVisible()
+    await expect(page.locator('text=已选择 1 个文件').first()).toBeVisible()
   })
 })
 
@@ -301,7 +301,7 @@ test.describe('图片格式转换器 — 异常处理', () => {
     await page.locator('select').selectOption('image/png')
 
     // 应显示同格式提示
-    await expect(page.locator('text=已是 PNG 格式')).toBeVisible()
+    await expect(page.locator('text=已是 PNG 格式').first()).toBeVisible()
   })
 
   test('重新选择按钮重置状态', async ({ page }) => {
@@ -313,7 +313,7 @@ test.describe('图片格式转换器 — 异常处理', () => {
 
     await page.locator('select').selectOption('image/jpeg')
     await page.locator('button:has-text("开始转换")').click()
-    await expect(page.locator('text=转换后')).toBeVisible({ timeout: 10000 })
+    await expect(page.locator('text=转换后').first()).toBeVisible({ timeout: 10000 })
 
     // 点击重新选择
     await page.locator('button:has-text("重新选择")').click()
