@@ -1,20 +1,118 @@
 {
-  "iteration": "0.0.1",
-  "version": "0.0.1",
+  "schema_version": 3,
   "public_url": "https://cqw.life/projects/image-converter/",
-  "verdict": "pass",
-  "screenshot_path": "evidence/verification/browser-0.0.1-main.png",
-  "checklist": {
-    "title": "图片格式转换器 v0.0.1",
-    "version_badge": "v0.0.1 present",
-    "mode_tabs": "单文件转换 + 批量转换, both visible",
-    "dropzone": "drag-and-drop area with instructions",
-    "format_selector": "PNG/JPEG/WebP/BMP options",
-    "footer": "privacy note displayed",
-    "console_errors": 0,
-    "visual_glitches": "none"
+  "final_url": "https://cqw.life/projects/image-converter/",
+  "base_path_ok": true,
+  "release_version": "0.0.1",
+  "document_response_headers": {
+    "cache-control": "no-cache",
+    "content-type": "text/html",
+    "server": "nginx/1.24.0 (Ubuntu)",
+    "etag": "W/\"6a37398c-32d\"",
+    "last-modified": "Sun, 21 Jun 2026 01:08:28 GMT"
   },
-  "browser": "Chromium via Browserbase",
-  "model": "DeepSeek-V4-Pro (vision)",
-  "timestamp": "2026-06-21T01:15:00Z"
+  "static_assets": [
+    {
+      "url": "https://cqw.life/projects/image-converter/assets/index-CyQoYMJj.css?v=0.0.1",
+      "http_status": 200,
+      "type": "text/css",
+      "transfer_size": 17189,
+      "cache_control": "no-cache"
+    },
+    {
+      "url": "https://cqw.life/projects/image-converter/assets/index-m5IY0ZGW.js?v=0.0.1",
+      "http_status": 200,
+      "type": "application/javascript",
+      "transfer_size": 267721,
+      "cache_control": "no-cache"
+    },
+    {
+      "url": "https://cqw.life/projects/image-converter/favicon.svg?v=0.0.1",
+      "http_status": 200,
+      "type": "image/svg+xml",
+      "transfer_size": 582,
+      "cache_control": "no-cache"
+    }
+  ],
+  "stylesheets": [
+    {
+      "href": "https://cqw.life/projects/image-converter/assets/index-CyQoYMJj.css?v=0.0.1",
+      "resolved_url": "https://cqw.life/projects/image-converter/assets/index-CyQoYMJj.css?v=0.0.1",
+      "http_status": 200,
+      "rules_count": 227
+    }
+  ],
+  "asset_probes": [
+    {
+      "url": "https://cqw.life/projects/image-converter/assets/index-CyQoYMJj.css?v=0.0.1",
+      "http_status": 200
+    },
+    {
+      "url": "https://cqw.life/projects/image-converter/assets/index-m5IY0ZGW.js?v=0.0.1",
+      "http_status": 200
+    }
+  ],
+  "pages": [
+    {"url": "https://cqw.life/projects/image-converter/", "title": "图片格式转换器 v0.0.1", "ok": true},
+    {"url": "https://cqw.life/projects/image-converter/ (单文件转换结果)", "title": "图片格式转换器 v0.0.1", "ok": true},
+    {"url": "https://cqw.life/projects/image-converter/ (批量转换结果)", "title": "图片格式转换器 v0.0.1", "ok": true},
+    {"url": "https://cqw.life/projects/image-converter/ (文件格式错误)", "title": "图片格式转换器 v0.0.1", "ok": true}
+  ],
+  "workflow_checks": [
+    {
+      "name": "单文件转换 PING→JPEG",
+      "steps": ["上传测试图片", "选择目标格式JPEG", "点击开始转换", "查看预览对比和文件大小变化", "下载按钮可见"],
+      "ok": true,
+      "details": "原图PNG 2.0KB→转换后JPEG 1.7KB，压缩率16.5%"
+    },
+    {
+      "name": "批量转换 3文件→PNG ZIP打包",
+      "steps": ["选择3张混合格式图片", "设目标格式PNG", "开始批量转换", "查看3个结果的大小变化", "ZIP下载按钮可见并点击"],
+      "ok": true,
+      "details": "RED.png 2.0KB→2.0KB(-0.0%), GREEN.jpeg 2.0KB→6.6KB(+233%), BLUE.webp 1.1KB→4.8KB(+343.6%)"
+    },
+    {
+      "name": "异常处理：源格式=目标格式",
+      "steps": ["上传PNG图片", "目标格式已为PNG", "显示警告提示"],
+      "ok": true,
+      "details": "显示'⚠️ 部分文件已是 PNG 格式'提示"
+    },
+    {
+      "name": "异常处理：非图片文件",
+      "steps": ["上传.txt文本文件", "观察错误提示"],
+      "ok": true,
+      "details": "红色Toast显示'不支持的文件格式：.txt，请选择 PNG、JPEG、WebP 或 BMP 图片文件'"
+    }
+  ],
+  "failed_requests": [],
+  "http_errors": [],
+  "console_errors": [],
+  "screenshots": [
+    {
+      "file": "evidence/verification/landing-page-0.0.1.png",
+      "description": "首页初始状态",
+      "visual_review": "pass"
+    },
+    {
+      "file": "evidence/verification/single-conversion-0.0.1.png",
+      "description": "单文件转换结果对比页",
+      "visual_review": "pass"
+    },
+    {
+      "file": "evidence/verification/batch-results-0.0.1.png",
+      "description": "批量转换结果+ZIP下载",
+      "visual_review": "pass"
+    },
+    {
+      "file": "evidence/verification/error-handling-0.0.1.png",
+      "description": "非图片文件错误提示",
+      "visual_review": "pass"
+    }
+  ],
+  "visual_review": {
+    "provider": "kimi",
+    "model": "kimi-k2",
+    "verdict": "pass",
+    "issues": []
+  }
 }
