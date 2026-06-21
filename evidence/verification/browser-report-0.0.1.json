@@ -53,33 +53,68 @@
     }
   ],
   "pages": [
-    {"url": "https://cqw.life/projects/image-converter/", "title": "图片格式转换器 v0.0.1", "ok": true},
-    {"url": "https://cqw.life/projects/image-converter/ (单文件转换结果)", "title": "图片格式转换器 v0.0.1", "ok": true},
-    {"url": "https://cqw.life/projects/image-converter/ (批量转换结果)", "title": "图片格式转换器 v0.0.1", "ok": true},
-    {"url": "https://cqw.life/projects/image-converter/ (文件格式错误)", "title": "图片格式转换器 v0.0.1", "ok": true}
+    {
+      "url": "https://cqw.life/projects/image-converter/",
+      "title": "图片格式转换器 v0.0.1",
+      "ok": true
+    },
+    {
+      "url": "https://cqw.life/projects/image-converter/ (单文件转换结果)",
+      "title": "图片格式转换器 v0.0.1",
+      "ok": true
+    },
+    {
+      "url": "https://cqw.life/projects/image-converter/ (批量转换结果)",
+      "title": "图片格式转换器 v0.0.1",
+      "ok": true
+    },
+    {
+      "url": "https://cqw.life/projects/image-converter/ (文件格式错误)",
+      "title": "图片格式转换器 v0.0.1",
+      "ok": true
+    }
   ],
   "workflow_checks": [
     {
       "name": "单文件转换 PING→JPEG",
-      "steps": ["上传测试图片", "选择目标格式JPEG", "点击开始转换", "查看预览对比和文件大小变化", "下载按钮可见"],
+      "steps": [
+        "上传测试图片",
+        "选择目标格式JPEG",
+        "点击开始转换",
+        "查看预览对比和文件大小变化",
+        "下载按钮可见"
+      ],
       "ok": true,
       "details": "原图PNG 2.0KB→转换后JPEG 1.7KB，压缩率16.5%"
     },
     {
       "name": "批量转换 3文件→PNG ZIP打包",
-      "steps": ["选择3张混合格式图片", "设目标格式PNG", "开始批量转换", "查看3个结果的大小变化", "ZIP下载按钮可见并点击"],
+      "steps": [
+        "选择3张混合格式图片",
+        "设目标格式PNG",
+        "开始批量转换",
+        "查看3个结果的大小变化",
+        "ZIP下载按钮可见并点击"
+      ],
       "ok": true,
       "details": "RED.png 2.0KB→2.0KB(-0.0%), GREEN.jpeg 2.0KB→6.6KB(+233%), BLUE.webp 1.1KB→4.8KB(+343.6%)"
     },
     {
       "name": "异常处理：源格式=目标格式",
-      "steps": ["上传PNG图片", "目标格式已为PNG", "显示警告提示"],
+      "steps": [
+        "上传PNG图片",
+        "目标格式已为PNG",
+        "显示警告提示"
+      ],
       "ok": true,
       "details": "显示'⚠️ 部分文件已是 PNG 格式'提示"
     },
     {
       "name": "异常处理：非图片文件",
-      "steps": ["上传.txt文本文件", "观察错误提示"],
+      "steps": [
+        "上传.txt文本文件",
+        "观察错误提示"
+      ],
       "ok": true,
       "details": "红色Toast显示'不支持的文件格式：.txt，请选择 PNG、JPEG、WebP 或 BMP 图片文件'"
     }
@@ -88,26 +123,10 @@
   "http_errors": [],
   "console_errors": [],
   "screenshots": [
-    {
-      "file": "evidence/verification/landing-page-0.0.1.png",
-      "description": "首页初始状态",
-      "visual_review": "pass"
-    },
-    {
-      "file": "evidence/verification/single-conversion-0.0.1.png",
-      "description": "单文件转换结果对比页",
-      "visual_review": "pass"
-    },
-    {
-      "file": "evidence/verification/batch-results-0.0.1.png",
-      "description": "批量转换结果+ZIP下载",
-      "visual_review": "pass"
-    },
-    {
-      "file": "evidence/verification/error-handling-0.0.1.png",
-      "description": "非图片文件错误提示",
-      "visual_review": "pass"
-    }
+    "evidence/verification/landing-page-0.0.1.png",
+    "evidence/verification/single-conversion-0.0.1.png",
+    "evidence/verification/batch-results-0.0.1.png",
+    "evidence/verification/error-handling-0.0.1.png"
   ],
   "visual_review": {
     "provider": "kimi",
