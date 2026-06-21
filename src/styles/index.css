@@ -18,3 +18,15 @@ body {
 .preview-image {
   @apply max-w-full max-h-64 object-contain rounded-lg;
 }
+
+/* Toast 动画 */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
