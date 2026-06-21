@@ -1,0 +1,32 @@
+{
+  "iteration": "0.0.1",
+  "timestamp": "2026-06-21T01:30:00+00:00",
+  "verifier": "hermes",
+  "build": {
+    "command": "npm run build",
+    "exit_code": 0,
+    "output_summary": "tsc -b + vite build — 49 modules transformed, 3 output files",
+    "dist_files": {
+      "html": "dist/index.html (0.81 kB)",
+      "css": "dist/assets/index-CyQoYMJj.css (17.19 kB)",
+      "js": "dist/assets/index-m5IY0ZGW.js (267.42 kB)"
+    },
+    "checks": {
+      "base_path": "/projects/image-converter/ in all asset URLs",
+      "version_tokens": "?v=0.0.1 on all static resources",
+      "favicon": "/projects/image-converter/favicon.svg?v=0.0.1"
+    }
+  },
+  "tests": {
+    "command": "npx playwright test",
+    "exit_code": 0,
+    "total": 12,
+    "passed": 12,
+    "failed": 0,
+    "duration_seconds": 5.4
+  },
+  "fixes_applied_by_hermes": [
+    "npm install --save-dev @types/node — 修复 playwright.config.ts 中 process 类型缺失导致 tsc -b 失败"
+  ],
+  "verdict": "passed"
+}
